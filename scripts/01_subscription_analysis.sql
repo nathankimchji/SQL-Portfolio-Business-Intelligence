@@ -21,3 +21,11 @@ monthly_revenue AS (
   FROM raw_subscriptions
   GROUP BY 1
 )
+
+SELECT
+  report_month,
+  revenue,
+  SUM(revenue) OVER (ORDER BY report_month) as running_total_revenue,
+  -- % growth from the previous month
+  ROUND((revenue - LAG(revenue) OVER (ORDER BY report_month)) / LAG(revenue) OVER (ORDER BY report_month) * 100, 2) as pct_growth
+FROM monthly_revenue;
